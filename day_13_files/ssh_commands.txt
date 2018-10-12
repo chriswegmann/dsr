@@ -1,0 +1,8 @@
+# execute the following lines in the command prompt
+cd C:\Users\Christian\git\dsr\day_13_files
+ssh -i dsr.pem ubuntu@ec2-34-214-112-90.us-west-2.compute.amazonaws.com
+cd DSR-Spark-AppliedML
+pyspark
+
+# open this in the browser (and replace token if needed)
+https://34.214.112.90:8888/?token=dc0207237f64bacb6abffb29fba2bfff82cd5f57cb562170
