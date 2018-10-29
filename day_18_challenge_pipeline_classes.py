@@ -22,6 +22,19 @@ class MergeColumns(TransformerMixin):
         x = x.drop(self.column_two, axis=1)
         return x
 
+class ImputeValue(TransformerMixin):
+    def __init__(self, column, value):
+        self.column = column
+        self.value = value
+    
+    def fit(self, x, y= None):
+        return self
+    
+    def transform(self, x):
+        x[self.column].fillna(self.value, inplace=True)
+        
+        return x
+
 class ConvertZeroToN(TransformerMixin):
     def __init__(self, column):
         self.column = column
@@ -72,7 +85,7 @@ def compare_predictions(x, y, finalpipeline, mean_price):
     final_predictions = pd.DataFrame(pd.concat([y, 
                                                 pd.Series(predictions), 
                                                 pd.Series(lazy_predictions)], axis=1))
-    final_predictions.rename(columns={'Price': 'True values',
+    final_predictions.rename(columns={'PRICE': 'True values',
                                       0: 'Predicted values',
                                       1: 'Lazy Predicted values'}, inplace=True)
     
@@ -96,4 +109,12 @@ def compare_predictions(x, y, finalpipeline, mean_price):
     print('MAE Inprovement:', mae_lazy - mae)
     print('R^2 Improvement:', abs(r2_lazy - r2))
     
+    
+    plt.figure(figsize=(20,10))
+
+    plt.plot(final_predictions.index, final_predictions['True values'], c='red', label='True Values')
+    plt.plot(final_predictions.index, final_predictions['Predicted values'], c='blue', label='Predicted Values')
+    plt.plot(final_predictions.index, final_predictions['Lazy Predicted values'], c='black', label='Lazy Predicted Values')
+    plt.legend(loc='best')
+    plt.show()
     return predictions
